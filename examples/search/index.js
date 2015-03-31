@@ -47,15 +47,18 @@ app.get('/search/:query?', function(req, res){
 });
 
 /**
- * GET client javascript. Here we use sendfile()
+ * GET client javascript. Here we use sendFile()
  * because serving __dirname with the static() middleware
  * would also mean serving our server "index.js" and the "search.jade"
  * template.
  */
 
 app.get('/client.js', function(req, res){
-  res.sendfile(__dirname + '/client.js');
+  res.sendFile(__dirname + '/client.js');
 });
 
-app.listen(3000);
-console.log('app listening on port 3000');
+/* istanbul ignore next */
+if (!module.parent) {
+  app.listen(3000);
+  console.log('Express started on port 3000');
+}

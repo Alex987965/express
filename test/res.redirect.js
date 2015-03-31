@@ -13,11 +13,8 @@ describe('res', function(){
 
       request(app)
       .get('/')
-      .end(function(err, res){
-        res.statusCode.should.equal(302);
-        res.headers.should.have.property('location', 'http://google.com');
-        done();
-      })
+      .expect('location', 'http://google.com')
+      .expect(302, done)
     })
   })
 
@@ -109,6 +106,21 @@ describe('res', function(){
         done();
       })
     })
+
+    it('should include the redirect type', function(done){
+      var app = express();
+
+      app.use(function(req, res){
+        res.redirect(301, 'http://google.com');
+      });
+
+      request(app)
+      .get('/')
+      .set('Accept', 'text/html')
+      .expect('Content-Type', /html/)
+      .expect('Location', 'http://google.com')
+      .expect(301, '<p>Moved Permanently. Redirecting to <a href="http://google.com">http://google.com</a></p>', done);
+    })
   })
 
   describe('when accepting text', function(){
@@ -146,6 +158,21 @@ describe('res', function(){
         done();
       })
     })
+
+    it('should include the redirect type', function(done){
+      var app = express();
+
+      app.use(function(req, res){
+        res.redirect(301, 'http://google.com');
+      });
+
+      request(app)
+      .get('/')
+      .set('Accept', 'text/plain, */*')
+      .expect('Content-Type', /plain/)
+      .expect('Location', 'http://google.com')
+      .expect(301, 'Moved Permanently. Redirecting to http://google.com', done);
+    })
   })
 
   describe('when accepting neither text or html', function(){
@@ -159,12 +186,11 @@ describe('res', function(){
       request(app)
       .get('/')
       .set('Accept', 'application/octet-stream')
-      .end(function(err, res){
-        res.should.have.status(302);
-        res.headers.should.have.property('location', 'http://google.com');
+      .expect('location', 'http://google.com')
+      .expect('content-length', '0')
+      .expect(302, '', function(err, res){
+        if (err) return done(err)
         res.headers.should.not.have.property('content-type');
-        res.headers.should.have.property('content-length', '0');
-        res.text.should.equal('');
         done();
       })
     })

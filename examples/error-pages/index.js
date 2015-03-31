@@ -5,12 +5,11 @@
 var express = require('../../');
 var app = module.exports = express();
 var logger = require('morgan');
-var favicon = require('static-favicon');
 var silent = 'test' == process.env.NODE_ENV;
 
 // general config
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 // our custom "verbose errors" setting
 // which we can use in the templates
@@ -19,18 +18,14 @@ app.enable('verbose errors');
 
 // disable them in production
 // use $ NODE_ENV=production node examples/error-pages
-if ('production' == app.settings.env) {
-  app.disable('verbose errors');
-}
-
-app.use(favicon());
+if ('production' == app.settings.env) app.disable('verbose errors');
 
 silent || app.use(logger('dev'));
 
 // Routes
 
 app.get('/', function(req, res){
-  res.render('index.jade');
+  res.render('index.ejs');
 });
 
 app.get('/404', function(req, res, next){
@@ -101,8 +96,8 @@ app.use(function(err, req, res, next){
   res.render('500', { error: err });
 });
 
-
+/* istanbul ignore next */
 if (!module.parent) {
   app.listen(3000);
-  silent || console.log('Express started on port 3000');
+  console.log('Express started on port 3000');
 }

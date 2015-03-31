@@ -28,7 +28,7 @@ function error(status, msg) {
 app.use('/api', function(req, res, next){
   var key = req.query['api-key'];
 
-  // key isnt present
+  // key isn't present
   if (!key) return next(error(400, 'api key required'));
 
   // key is invalid
@@ -49,7 +49,7 @@ var apiKeys = ['foo', 'bar', 'baz'];
 // these two objects will serve as our faux database
 
 var repos = [
-    { name: 'express', url: 'http://github.com/visionmedia/express' }
+    { name: 'express', url: 'http://github.com/strongloop/express' }
   , { name: 'stylus', url: 'http://github.com/learnboost/stylus' }
   , { name: 'cluster', url: 'http://github.com/learnboost/cluster' }
 ];
@@ -93,17 +93,20 @@ app.get('/api/user/:name/repos', function(req, res, next){
 app.use(function(err, req, res, next){
   // whatever you want here, feel free to populate
   // properties on `err` to treat it differently in here.
-  res.send(err.status || 500, { error: err.message });
+  res.status(err.status || 500);
+  res.send({ error: err.message });
 });
 
 // our custom JSON 404 middleware. Since it's placed last
 // it will be the last middleware called, if all others
 // invoke next() and do not respond.
 app.use(function(req, res){
-  res.send(404, { error: "Lame, can't find that" });
+  res.status(404);
+  res.send({ error: "Lame, can't find that" });
 });
 
+/* istanbul ignore next */
 if (!module.parent) {
   app.listen(3000);
-  console.log('Express server listening on port 3000');
+  console.log('Express started on port 3000');
 }

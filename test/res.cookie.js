@@ -1,9 +1,9 @@
 
 var express = require('../')
   , request = require('supertest')
-  , mixin = require('utils-merge')
   , cookie = require('cookie')
   , cookieParser = require('cookie-parser')
+var merge = require('utils-merge');
 
 describe('res', function(){
   describe('.cookie(name, object)', function(){
@@ -91,7 +91,7 @@ describe('res', function(){
         request(app)
         .get('/')
         .end(function(err, res){
-          res.headers['set-cookie'][0].should.not.include('Thu, 01 Jan 1970 00:00:01 GMT');
+          res.headers['set-cookie'][0].should.not.containEql('Thu, 01 Jan 1970 00:00:01 GMT');
           done();
         })
       })
@@ -106,17 +106,14 @@ describe('res', function(){
 
         request(app)
         .get('/')
-        .end(function(err, res){
-          res.headers['set-cookie'][0].should.include('Max-Age=1');
-          done();
-        })
+        .expect('Set-Cookie', /Max-Age=1/, done)
       })
 
       it('should not mutate the options object', function(done){
         var app = express();
 
         var options = { maxAge: 1000 };
-        var optionsCopy = mixin({}, options);
+        var optionsCopy = merge({}, options);
 
         app.use(function(req, res){
           res.cookie('name', 'tobi', options)

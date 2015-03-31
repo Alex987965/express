@@ -34,7 +34,7 @@ var users = {
     res.send('user ' + req.params.uid);
   },
 
-  del: function(req, res){
+  delete: function(req, res){
     res.send('delete users');
   }
 };
@@ -44,7 +44,7 @@ var pets = {
     res.send('user ' + req.params.uid + '\'s pets');
   },
 
-  del: function(req, res){
+  delete: function(req, res){
     res.send('delete ' + req.params.uid + '\'s pet ' + req.params.pid);
   }
 };
@@ -52,17 +52,21 @@ var pets = {
 app.map({
   '/users': {
     get: users.list,
-    del: users.del,
+    delete: users.delete,
     '/:uid': {
       get: users.get,
       '/pets': {
         get: pets.list,
         '/:pid': {
-          del: pets.del
+          delete: pets.delete
         }
       }
     }
   }
 });
 
-app.listen(3000);
+/* istanbul ignore next */
+if (!module.parent) {
+  app.listen(3000);
+  console.log('Express started on port 3000');
+}

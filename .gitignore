@@ -1,19 +1,26 @@
-coverage.html
-.DS_Store
-lib-cov
-*.seed
+# OS X
+.DS_Store*
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+*~
+
+
+# npm
+node_modules
 *.log
-*.csv
-*.dat
-*.out
-*.pid
-*.swp
-*.swo
+*.gz
+
+
+# Coveralls
+coverage
+
+# Benchmarking
 benchmarks/graphs
-testing
-node_modules/
-testing
-.coverage_data
-cover_html
-test.js
-.idea

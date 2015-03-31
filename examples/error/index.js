@@ -20,7 +20,8 @@ function error(err, req, res, next) {
   if (!test) console.error(err.stack);
 
   // respond with 500 "Internal Server Error".
-  res.send(500);
+  res.status(500);
+  res.send('Internal Server Error');
 }
 
 app.get('/', function(req, res){
@@ -40,6 +41,7 @@ app.get('/next', function(req, res, next){
 // from app.get() etc
 app.use(error);
 
+/* istanbul ignore next */
 if (!module.parent) {
   app.listen(3000);
   console.log('Express started on port 3000');
